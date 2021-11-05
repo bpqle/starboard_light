@@ -32,6 +32,7 @@ name = "lights"
 version = "0.1.0"
 dependencies = [
  "chrono",
+ "sun",
  "sun-times",
 ]
 
@@ -53,6 +54,12 @@ checksum = "9a64b1ec5cda2586e284722486d802acf1f7dbdc623e2bfc57e65ca1cd099290"
 dependencies = [
  "autocfg",
 ]
+
+[[package]]
+name = "sun"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dfc29238f46800dc0e29dbc0b3cab5e745dd40560220f759e30d298740781b59"
 
 [[package]]
 name = "sun-times"
