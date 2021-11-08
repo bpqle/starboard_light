@@ -5,8 +5,8 @@ use chrono;
 use chrono::{Utc, DateTime, Timelike};
 use std::cmp::{min,max};
 use sun;
-use std::fs::File;
-use std::io::{Write, Read};
+use std::fs::OpenOptions;
+use std::io::{self,prelude::*,Write, Read};
 
 fn main() {
     const PAR_EPHEMERA: bool = true;
@@ -23,7 +23,7 @@ fn main() {
     //let dusk = dusk.hour() + (dusk.minute() / 60) + (dusk.second() / 3600);
     let x  = (now + 24 - DAY_START) % 24;
     let y = (DAY_STOP + 24 - now) % 24;
-    let result: f64 = (x/y) as f64 * 3.14;
+    let result: f64 = (1.6/1.8) as f64 * 3.14;
 
     let mut sun_altitude: f64 = 0.0;
 
@@ -36,13 +36,20 @@ fn main() {
     }
     let brightness = (sun_altitude.sin() * MAX_BRIGHTNESS) as u8;
     let brightness = max(0, brightness);
-    println!("Brightness is {:?}", brightness);
-    let mut light = File::open("/sys/class/leds/starboard::lights/brightness").unwrap();
-    light.write(&[brightness]);
-    let mut led = File::open("/sys/class/leds/peckboard:left:blue/brightness").unwrap();
-    let mut reader: u8 = 1;
-    led.write(&[reader]).unwrap();
-    println!("Result of read is {:?}", reader);
+    //println!("Brightness is {:?}", brightness);
+
+    let mut light = OpenOptions::new()
+        .write(true)
+        .read(true)
+        //.truncate(true)
+        .open("/sys/class/leds/starboard::lights/brightness")
+        .unwrap();
+    let mut buffer= Vec::new();
+    let n = light.read(&mut buffer).unwrap();
+    println!("{:?}",&buffer);
+    light.write(&[brightness]).unwrap();
+    let n = light.read(&mut buffer).unwrap();
+    println!("{:?}",buffer);
     loop {
         thread::sleep(Duration::from_secs(5))
     }
