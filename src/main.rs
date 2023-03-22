@@ -1,5 +1,5 @@
-use std::{fs, thread};
-use std::io::{self,prelude::*,Write, Read};
+use std::fs;
+use std::io;
 
 
 const PERIOD: u32 = 500000;
@@ -12,7 +12,7 @@ fn main() {
         io::stdin().read_line(&mut input)
             .ok()
             .expect("Failed to read input");
-        let brightness = input.parse::<u32>().unwrap();
+        let brightness = input.trim().parse::<u32>().unwrap();
         let duty_cycle = get_duty(brightness);
 
 
@@ -23,6 +23,6 @@ fn main() {
 }
 
 fn get_duty(brightness: u32) -> String {
-    return (PERIOD * brightness/100).to_string()
+    return ((PERIOD * brightness/100) as u32).to_string()
 }
 
